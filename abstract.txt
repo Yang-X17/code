@@ -1,9 +1,0 @@
-The four files in this project:
-
-calculate_V_2.py: the calculation of proximity of coastal settlements to coatlines
-
-MK.R: Mann–Kendall test of temporal trend for huaman settlement movement
-
-LMM.R: the analysis of the linear mixed model of human proximity of coastal settlements to coatlines
-
-uncertainty.R: the analysis of  the linear mixed model with 10%, 20%, and 30% of samples randomly removed across 10,000 iterations.
