@@ -3,7 +3,8 @@ setwd("D:\\1.Topic\\4.other\\model")#设定工作路径
 library(xlsx)
 library(trend)#MK检验的包
 data<-read.xlsx("D:/1.Topic/4.other/model/3.dropdata.xlsx" ,3)
-
+mk_p<- numeric(length = 1071) 
+mk_z<- numeric(length = 1071)
 #循环 定义一个数据范围，定义一个数据操作，在这个范围中遍历这个操作
 for (i in 1:1071){
 a<- as.numeric(data[,c(i)])
