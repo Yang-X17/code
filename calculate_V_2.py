@@ -8,7 +8,7 @@ from arcpy.sa import *
 
 
 def shpInPath(path):
-    # 找出路径下所首个shp文件
+  
     shp = None
     for dirPath,dirName,fileNames in os.walk(path):
         for fileName in fileNames:
@@ -16,11 +16,11 @@ def shpInPath(path):
                 shp =os.path.join(dirPath,fileName)
                 return shp
 
-    if shp :raise ValueError(path +"\t未找到shp文件")
+    if shp :raise ValueError(path +"\t未找到shp文件") #(path +"\t shp file not found")
 
 
 def rastersInPath(path):
-    # 找出路径下首个tif文件
+  
     rasters = None
     for dirPath,dirName,fileNames in os.walk(path):
         for fileName in fileNames:
@@ -28,30 +28,31 @@ def rastersInPath(path):
                 rasters=os.path.join(dirPath,fileName)
                 return rasters
 
-    if rasters :raise ValueError(path +"\t缓冲区tif文件")
+    if rasters :raise ValueError(path +"\t缓冲区tif文件")#(path +"\t buffer zone tif file")
+
     
 def allRastersInPath(path):
-    # 找出路径下所有tif文件
+ 
     rasters = []
     for dirPath,dirName,fileNames in os.walk(path):
         for fileName in fileNames:
             if os.path.splitext(fileName)[-1]==".tif":
                 rasters.append(os.path.join(dirPath,fileName))
 
-    if len(rasters)== 0:raise ValueError(path +"\t未找到tif")
+    if len(rasters)== 0:raise ValueError(path +"\t未找到tif") #(path +"\t tif file not found")
     return rasters
 
 def calculate(region,field,flood,floodClass,nightLights):
 
     def rastersInPath(path):
-        # 找出路径下所有tif文件
+      
         rasters = []
         for dirPath,dirName,fileNames in os.walk(path):
             for fileName in fileNames:
                 if os.path.splitext(fileName)[-1]==".tif":
                     rasters.append(os.path.join(dirPath,fileName))
 
-        if len(rasters)== 0:raise ValueError(path +"\t未找到tif")
+        if len(rasters)== 0:raise ValueError(path +"\t未找到tif") #(path +"\t tif file not found")
         return rasters
 
 
@@ -73,7 +74,7 @@ def calculate(region,field,flood,floodClass,nightLights):
         nightLight = Int(nightLight)
         nightLight = ExtractByMask(nightLight, flood)
 
-        # 计算权重
+        # calculate weight
         outTable1 = ZonalStatisticsAsTable(in_zone_data=region,zone_field=field,\
             in_value_raster=nightLight,out_table ="_".join([str(field),str(floodClass),str(year),"weight"])\
                 + ".dbf",\
@@ -81,7 +82,7 @@ def calculate(region,field,flood,floodClass,nightLights):
 
         nightLight = Times(nightLight,flood)
 
-        # 计算缓冲区×夜间灯光
+        # Calculate buffer zone x night light
         outTable2 = ZonalStatisticsAsTable(in_zone_data=region,zone_field=field,\
             in_value_raster=nightLight,out_table ="_".join([field,floodClass,year,"flood"])+ ".dbf",\
                 statistics_type="SUM")
@@ -141,42 +142,42 @@ def addFieldValue(year,inFeatures,field,floodTables,weightTables):
 
 
 
-# 夜间灯光所在文件夹
+# Folder containing nighttime light
 nightLights = r"..\static\nightlight"
 
-# 缓冲区tif文件路径
+# Buffer tif file path
 flood = rastersInPath(r".\flood")
 
-# 矢量文件路径 
+# Vector file path 
 region = shpInPath(r".\shp")
 
-# 输出位置 
+# output location 
 workspace = ".\workspace"
 arcpy.env.workspace = workspace
 
 
-# 缓冲区
+# buffer zone
 floodClass = "use_flood"
 
 
-# 统计字段从命令行获取
+# Retrieve statistical fields from the command line
 field = sys.argv[1]
 
-print("夜间灯光文件夹\t" + nightLights)
-print("夜间灯光栅格\t")
+print("夜间灯光文件夹\t" + nightLights) # print("Nighttime Light Folder\t" + nightLights)
+print("夜间灯光栅格\t") # print("Nighttime Light grid\t" + nightLights)
 print(allRastersInPath(nightLights))
-print("缓冲区栅格\t" + flood)
-print("统计shp\t" + region)
-print("工作空间\t" + workspace)
-print("缓冲区类型（可选）\t" + floodClass)
-print("统计字段\t" +field)
+print("缓冲区栅格\t" + flood) # print("Buffer Grid\t" + flood) 
+print("统计shp\t" + region) #print("Statistical shp\t" + region)
+print("工作空间\t" + workspace) #print("workspace\t" + workspace)
+print("缓冲区类型（可选）\t" + floodClass) #print("Buffer type (optional)\t" + floodClass)
+print("统计字段\t" +field) #print("Statistics Field\t" +field)
 
 if __name__=="__main__":
-    # 计算dbf
+    # Calculate dbf
     calculate(region,field,flood,floodClass,nightLights)
 
 
-    # 计算字段值
+    # Calculate field values
     
     floodTables = tablesInPath(workspace,floodClass,"flood.dbf")
 
